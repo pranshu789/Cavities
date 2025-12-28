@@ -35,7 +35,7 @@ def reflection_matrix(i, delta=0):
     rho_p = globals()[f"rho_p_{m_type}"]
 
     phi_s = 0
-    phi_p = delta if i in delta_mirrors else 0
+    phi_p = (delta) if m_type == 1 else globals()[f"phi_p_{m_type}"]
 
     return np.diag([
         rho_s * np.exp(1j * phi_s),
