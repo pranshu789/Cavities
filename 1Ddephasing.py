@@ -21,8 +21,6 @@ mirror_types = [1,1,1,1]
 
 # Reflectivities
 rho_p_1, rho_s_1 = 0.997283, 0.997452
-phi_s_1, phi_p_1 = 0, 0 # not necessary here but as an example
-
 
 # ---------------- METHODS FOR JONES MATRIX CALCULATION --------------------#
 
