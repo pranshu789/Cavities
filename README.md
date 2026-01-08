@@ -4,5 +4,5 @@ This repository contains all the codes used to evaluate non-planar cavity geomet
 
 1. 1D Circularity plot for varying dephasing:                                              1Ddephasing.py
 2. 2D Circularity plot for varying dephasing and a varying geometric parameter:              2Ddephasing_geometry.py
-3. 1D AOI plot for varying geometric parameter
-4. 1D Rotation Angle plot for varying geometric parameter
+3. 1D AOI and Rotation Angle plots for varying geometric parameter:                            Rotation_AOI.py                  
+4. A place to store the parameters for your most used cavity geometries:                     input.py
