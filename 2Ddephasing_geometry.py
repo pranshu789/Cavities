@@ -6,14 +6,28 @@ import matplotlib.pyplot as plt
 #------------------ INPUT PARAMETERS OF THE CAVITY -------------------------# (Sample parameters are given in the input.py file, simply copy, and replace the ones below or write your own!)
 
 # 4-mirror Tetrahedral
-coords = [
-    [4.85, 0, 5],
-    [4.85, 20, 0],
+
+# ------------- USER INPUT FOR g_var ---------------------------------------#
+#put the coords inside this function and add the g_var however you want it varied
+#in the plotting function at the end, change the units and name of your geometric variable as you want
+
+
+def get_coords(g_var):
+    return [
+    [5, 0, 5*np.tan(g_var/2)],
+    [5, 5, 0],
     [0, 0, 0],
-    [0, 20, 5]
+    [0, 5, 5*np.tan(g_var/2)]
 ]
 
-start_mirror = 1   # the starting mirror aka the section you want access to
+g_var_min = 0.0
+g_var_max = 90.0
+n_g = 400
+
+g_vars = np.linspace(np.deg2rad(g_var_min), np.deg2rad(g_var_max), n_g)
+coords = get_coords(g_vars[0])
+
+start_mirror = 2   # the starting mirror aka the section you want access to
 n_mirrors = len(coords)
 
 # mirror types: 1=mirrors with delta dephasing to be varied, 2,3,4=other mirrors with known dephasings
@@ -21,6 +35,7 @@ mirror_types = [1,1,1,1]
 
 # Reflectivities
 rho_p_1, rho_s_1 = 0.997283, 0.997452
+
 
 # ---------------- METHODS FOR JONES MATRIX CALCULATION --------------------#
 
@@ -44,11 +59,11 @@ def reflection_matrix(i, delta=0):
 
 
 def local_basis(i):
-    kin = normalize(np.array(coords[i])-np.array(coords[i-1]))
-    kout = normalize(np.array(coords[(i+1)%n_mirrors])-np.array(coords[i]))
-    nvec = -kin+kout
-    svec = normalize(np.cross(nvec,kin))
-    pvec = normalize(np.cross(kin,svec))
+    kin = normalize(np.array(coords[i]) - np.array(coords[i-1]))
+    kout = normalize(np.array(coords[(i+1)%n_mirrors]) - np.array(coords[i]))
+    nvec = kin + kout
+    svec = normalize(np.cross(nvec, kin))
+    pvec = normalize(np.cross(kin, svec))
     return pvec, svec, kin
 
 def rotation_angle(i):
@@ -56,6 +71,7 @@ def rotation_angle(i):
     _, svec_next, _ = local_basis((i+1)%n_mirrors)
     cos_a = np.clip(np.dot(svec_i,svec_next),-1,1)
     return np.degrees(np.arccos(cos_a))
+
 
 def angle_of_incidence(i):
     kin = normalize(np.array(coords[i])-np.array(coords[i-1]))
@@ -93,9 +109,13 @@ def circularity(delta):
     return max(circ_vals)
 
 
-deltas = np.linspace(0, 2*np.pi, 200)
-circ_vals = [circularity(delta) for delta in deltas]
+deltas = np.linspace(0, np.pi*2, 400)
+circ_map = np.zeros((len(g_vars), len(deltas)))
 
+for ig, g in enumerate(g_vars):
+    coords = get_coords(g)
+    for id, delta in enumerate(deltas):
+        circ_map[ig,id]=circularity(delta)
 
 print("\n===== ANGLES OF INCIDENCE (AOI) =====")
 for i in range(n_mirrors):
@@ -108,21 +128,41 @@ for i in range(n_mirrors):
     print(f"Rotation angle between mirrors {i+1} → {(i+2)%n_mirrors}: {ang:.4f} degrees")
 
 
-plt.plot(deltas*180/np.pi, circ_vals, color='red', linewidth=3)
+plt.figure(figsize=(8,6))
+
+
+plt.imshow(
+    circ_map,
+    cmap="RdBu_r",
+    origin="lower",
+    aspect="auto",
+    extent = [ deltas[0]*180/np.pi, deltas[-1]*180/np.pi, g_vars[0]*180/np.pi, g_vars[-1]*180/np.pi],
+    vmin=0,
+    vmax=1
+)
+
+
+plt.colorbar(label="Degree of circularity |S3/S0|")
 plt.xlabel("Dephasing Δϕ (deg)")
-plt.ylabel("Degree of circularity |S3/S0|")
-plt.title("Circularity vs Dephasing")
-plt.grid(True)
-plt.ylim(0, 1.05)
-plt.xlim(0, 360)
+plt.ylabel("geometric variable (unit)")
+plt.title("Circulqrity vs Dephasing and g_var")
+
 plt.show()
 
 
 # --------------------- PRINTING SOME VALUES -------------#
+specific_g_deg = [2,71,90]
+specific_delta_deg = [30,90,180]
 
-specific_degrees = [30, 60, 90, 180, 210, 240, 270, 330]
-print("Circularity values:")
-for deg in specific_degrees:
-    delta_rad = np.deg2rad(deg)
-    circ_val = circularity(delta_rad)
-    print(f"Δϕ = {deg}° : Circularity = {circ_val:.4f}")
+
+print("\nCircularity values:")
+
+for g_deg in specific_g_deg:
+    g_rad = np.deg2rad(g_deg)
+    coords = get_coords(g_rad)
+
+    for delta_deg in specific_delta_deg:
+        delta_rad = np.deg2rad(delta_deg)
+        circ_val = circularity(delta_rad)
+
+    print(f"g_var = {g_deg:6.2f}°  | "f"Δϕ = {delta_deg:6.1f}°  → "f"Circularity = {circ_val:.4f}")

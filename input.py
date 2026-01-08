@@ -3,15 +3,16 @@
 # ----------------- 4 MIRROR Tetrahedral --------------------- #
 
 coords = [
-    [3.5, 0, 5],
-    [3.5, 5, 0],
+    [4.85, 0, 5],
+    [4.85, 20, 0],
     [0, 0, 0],
-    [0, 5, 5]
+    [0, 20, 5]
 ]
 
+start_mirror = 1   # the starting mirror aka the section you want access to
 n_mirrors = len(coords)
-start_mirror = 2   
 
+# mirror types: 1=mirrors with delta dephasing to be varied, 2,3,4=other mirrors with known dephasings
 mirror_types = [1,1,1,1]
 
 # Reflectivities
