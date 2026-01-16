@@ -49,7 +49,26 @@ phi_p_2 = 0
 
 # -------------------- 6 MIRROR Manta ----------------------#
 
+coords = [
+    [1, 0, -1],
+    [-1, -600, 1],
+    [-1, -300, 520],
+    [-1, 0, 1],
+    [1, -600, -1],
+    [520, -300, -1]
+]
 
+n_mirrors = len(coords)
+start_mirror = 3    # the starting mirror aka the section you want access to
+
+# mirror types: 1=mirrors with delta dephasing to be varied, 2,3,4=other mirrors with known dephasings
+mirror_types = [1,1,1,1,1,1]
+
+# Reflectivities
+rho_p_1, rho_s_1 = 0.9990, 0.9995
+
+#known dephasings
+phi_p_2 = 0
 
 
 
