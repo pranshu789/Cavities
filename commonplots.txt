@@ -1,0 +1,76 @@
+1. Varying the angles between the planes in Manta:
+
+- script: 2Ddephasing_geometry
+- input:
+def get_coords(g_var):
+    return [
+        [1, 0, -1],
+        [-1, -600, 1],
+        [g_var*520, -300, 520],
+        [-1, 0, 1],
+        [1, -600, -1],
+        [520, -300, g_var*520]
+]
+
+g_var_min = -1.0
+g_var_max = 1.0
+n_g = 100
+
+g_vars = np.linspace((g_var_min), (g_var_max), n_g)
+coords = get_coords(g_vars[0])
+
+start_mirror = 3   # the starting mirror aka the section you want access to
+n_mirrors = len(coords)
+
+# mirror types: 1=mirrors with delta dephasing to be varied, 2,3,4=other mirrors with known dephasings
+mirror_types = [1,1,1,1,1,1]
+
+# Reflectivities
+rho_p_1, rho_s_1 = 0.997283, 0.997452
+
+- plotting:
+(2*np.arctan(g_vars[0]))*180/np.pi+90, (2*np.arctan(g_vars[-1]))*180/np.pi+90
+
+
+
+
+2. Varying the angle between the planes in Spacecraft-10
+
+- script: 2Ddephasing_geometry
+- input:
+def get_coords(g_var):
+    return [
+        [5.5, 0, -4*g_var-1.5],
+        [1.5, -36, -1.5],
+        [-1.5, -15, 1.5],
+        [-4*g_var-1.5, -48, 5.5],
+        [-8*g_var-1.5, -48, 9.5],
+        [-4*g_var-1.5, 0, 5.5],
+        [-1.5, -36, 1.5],
+        [1.5, -15, -1.5],
+        [5.5, -48, -4*g_var-1.5],
+        [9.5, -48, -8*g_var-1.5]
+]
+
+g_var_min = 0.0
+g_var_max = 1.0
+n_g = 250
+
+g_vars = np.linspace((g_var_min), (g_var_max), n_g)
+coords = get_coords(g_vars[0])
+
+start_mirror = 2   # the starting mirror aka the section you want access to
+n_mirrors = len(coords)
+
+# mirror types: 1=mirrors with delta dephasing to be varied, 2,3,4=other mirrors with known dephasings
+mirror_types = [2,2,2,1,1,2,2,2,1,1]
+
+# Reflectivities
+rho_p_2, rho_s_2 = 0.997283, 0.997452
+rho_p_1, rho_s_1 = 0.9990, 0.9995
+
+#known dephasings
+phi_p_2 = 0
+
+- plotting:
+(2*np.arctan(g_vars[0]))*180/np.pi+90, (2*np.arctan(g_vars[-1]))*180/np.pi+90
