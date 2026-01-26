@@ -6,3 +6,7 @@ This repository contains all the codes used to evaluate non-planar cavity geomet
 2. 2D Circularity plot for varying dephasing and a varying geometric parameter:              2Ddephasing_geometry.py
 3. 1D AOI and Rotation Angle plots for varying geometric parameter:                            Rotation_AOI.py                  
 4. A place to store the parameters for your most used cavity geometries:                     input.py
+
+Jones formalism to check coupling into the cavity eigenmodes as a function of input polarization:
+1. Input S amplitude, P amplitude, dephasing variable                polarizationsim.py
+2. QWP angle variable             qwpsim.py
